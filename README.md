@@ -348,9 +348,9 @@ Hierarchy, motion, accessibility, responsiveness and feedback are part of engine
 <p>
   <a href="https://github.com/zainkhan-pro">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/zainkhan-pro/zainkhan-pro/output/github-contribution-snake-dark.svg" />
-      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/zainkhan-pro/zainkhan-pro/output/github-contribution-snake.svg" />
-      <img alt="GitHub contribution activity" src="https://raw.githubusercontent.com/zainkhan-pro/zainkhan-pro/output/github-contribution-snake.svg" width="900" />
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/zainkhan-pro/zainkhan-pro/output/zainkhan-pro-contribution-grid-dark.svg" />
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/zainkhan-pro/zainkhan-pro/output/zainkhan-pro-contribution-grid.svg" />
+      <img alt="GitHub contribution activity" src="https://raw.githubusercontent.com/zainkhan-pro/zainkhan-pro/output/zainkhan-pro-contribution-grid.svg" width="900" />
     </picture>
   </a>
 </p>
