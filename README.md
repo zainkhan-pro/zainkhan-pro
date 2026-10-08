@@ -351,7 +351,7 @@ Hierarchy, motion, accessibility, responsiveness and feedback are part of engine
 
 <br/><br/>
 
-<img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=zainkhan-pro&theme=github_dark"/>
+The reliable source of truth is the GitHub profile itself — no third-party stats card is required.
 
 </div>
 
