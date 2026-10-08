@@ -343,15 +343,25 @@ Hierarchy, motion, accessibility, responsiveness and feedback are part of engine
 
 <div align="center">
 
-### EVERYTHING HERE IS REAL-TIME AT THE SOURCE.
+### CONTRIBUTION ACTIVITY
+
+<p>
+  <a href="https://github.com/zainkhan-pro">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/zainkhan-pro/zainkhan-pro/output/github-contribution-snake-dark.svg" />
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/zainkhan-pro/zainkhan-pro/output/github-contribution-snake.svg" />
+      <img alt="GitHub contribution activity" src="https://raw.githubusercontent.com/zainkhan-pro/zainkhan-pro/output/github-contribution-snake.svg" width="900" />
+    </picture>
+  </a>
+</p>
+
+<sub>Automatically regenerated from the GitHub contribution grid by GitHub Actions.</sub>
+
+<br/><br/>
 
 [![Repositories](https://img.shields.io/badge/REPOSITORIES-EXPLORE-020617?style=for-the-badge&logo=github&logoColor=white)](https://github.com/zainkhan-pro?tab=repositories)
 [![Activity](https://img.shields.io/badge/ACTIVITY-VIEW-020617?style=for-the-badge&logo=github&logoColor=white)](https://github.com/zainkhan-pro?tab=overview)
 [![Achievements](https://img.shields.io/badge/ACHIEVEMENTS-VIEW-020617?style=for-the-badge&logo=github&logoColor=white)](https://github.com/zainkhan-pro?tab=achievements)
-
-<br/><br/>
-
-The reliable source of truth is the GitHub profile itself — no third-party stats card is required.
 
 </div>
 
