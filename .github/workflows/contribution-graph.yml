@@ -1,4 +1,4 @@
-name: Generate contribution graph
+name: Generate native contribution calendar
 
 on:
   schedule:
@@ -14,18 +14,162 @@ permissions:
 jobs:
   generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     steps:
-      - name: Generate contribution graph
-        uses: Platane/snk/svg-only@v3
+      - name: Build GitHub contribution calendar
+        uses: actions/github-script@v9
         with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/zainkhan-pro-contribution-grid.svg?palette=github-light
-            dist/zainkhan-pro-contribution-grid-dark.svg?palette=github-dark
+          github-token: ${{ secrets.GH_CONTRIBUTIONS_TOKEN || github.token }}
+          script: |
+            const fs = require("fs");
+            const path = require("path");
 
-      - name: Publish graph
+            const login = context.repo.owner;
+
+            const query = `
+              query($login: String!) {
+                user(login: $login) {
+                  contributionsCollection {
+                    contributionCalendar {
+                      totalContributions
+                      weeks {
+                        contributionDays {
+                          contributionCount
+                          contributionLevel
+                          date
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            `;
+
+            const data = await github.graphql(query, { login });
+            const calendar = data.user?.contributionsCollection?.contributionCalendar;
+
+            if (!calendar) {
+              core.setFailed(`Could not read contribution calendar for ${login}`);
+              return;
+            }
+
+            const weeks = calendar.weeks;
+            const total = calendar.totalContributions;
+
+            fs.mkdirSync("dist", { recursive: true });
+
+            const levelColors = {
+              NONE: {
+                light: "#ebedf0",
+                dark: "#161b22"
+              },
+              FIRST_QUARTILE: {
+                light: "#9be9a8",
+                dark: "#0e4429"
+              },
+              SECOND_QUARTILE: {
+                light: "#40c463",
+                dark: "#006d32"
+              },
+              THIRD_QUARTILE: {
+                light: "#30a14e",
+                dark: "#26a641"
+              },
+              FOURTH_QUARTILE: {
+                light: "#216e39",
+                dark: "#39d353"
+              }
+            };
+
+            const width = 980;
+            const height = 190;
+            const left = 34;
+            const top = 42;
+            const cell = 11;
+            const gap = 3;
+            const step = cell + gap;
+            const cellSize = cell;
+
+            function esc(value) {
+              return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&apos;");
+            }
+
+            function buildSvg(mode) {
+              const colors = levelColors;
+              const text = mode === "dark" ? "#8b949e" : "#57606a";
+              const heading = mode === "dark" ? "#f0f6fc" : "#24292f";
+              const stroke = mode === "dark" ? "#21262d" : "#ffffff";
+
+              const firstDate = weeks[0]?.contributionDays?.[0]?.date;
+              const lastDate = weeks.at(-1)?.contributionDays?.at(-1)?.date;
+
+              let cells = "";
+              weeks.forEach((week, wx) => {
+                week.contributionDays.forEach((day, dy) => {
+                  const x = left + wx * step;
+                  const y = top + dy * step;
+                  const fill = colors[day.contributionLevel]?.[mode] || colors.NONE[mode];
+                  const title = `${day.contributionCount} contributions on ${day.date}`;
+                  cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${fill}" stroke="${stroke}" stroke-width="0.5"><title>${esc(title)}</title></rect>`;
+                });
+              });
+
+              const monthLabels = [];
+              let lastMonth = "";
+              weeks.forEach((week, wx) => {
+                const date = week.contributionDays?.[0]?.date;
+                if (!date) return;
+                const month = new Date(date + "T00:00:00Z").toLocaleString("en-US", {
+                  month: "short",
+                  timeZone: "UTC"
+                });
+                if (month !== lastMonth) {
+                  monthLabels.push(`<text x="${left + wx * step}" y="24" fill="${text}" font-size="11" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif">${month}</text>`);
+                  lastMonth = month;
+                }
+              });
+
+              return `<?xml version="1.0" encoding="UTF-8"?>
+            <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="GitHub contribution calendar for ${esc(login)} showing ${total} contributions in the last year">
+              <rect width="100%" height="100%" rx="14" fill="transparent"/>
+              <text x="${left}" y="15" fill="${heading}" font-size="14" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif">${esc(total)} contributions in the last year</text>
+              ${monthLabels.join("")}
+              ${cells}
+              <text x="${left}" y="${top + 6 * step + 20}" fill="${text}" font-size="10" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif">Sun</text>
+              <text x="${left}" y="${top + 2 * step + 4}" fill="${text}" font-size="10" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif">Mon</text>
+              <text x="${left}" y="${top + 4 * step + 4}" fill="${text}" font-size="10" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif">Wed</text>
+              <text x="${width - 150}" y="${height - 10}" fill="${text}" font-size="10" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif">Less</text>
+              <rect x="${width - 112}" y="${height - 18}" width="11" height="11" rx="2" fill="${colors.NONE[mode]}"/>
+              <rect x="${width - 96}" y="${height - 18}" width="11" height="11" rx="2" fill="${colors.FIRST_QUARTILE[mode]}"/>
+              <rect x="${width - 80}" y="${height - 18}" width="11" height="11" rx="2" fill="${colors.SECOND_QUARTILE[mode]}"/>
+              <rect x="${width - 64}" y="${height - 18}" width="11" height="11" rx="2" fill="${colors.THIRD_QUARTILE[mode]}"/>
+              <rect x="${width - 48}" y="${height - 18}" width="11" height="11" rx="2" fill="${colors.FOURTH_QUARTILE[mode]}"/>
+              <text x="${width - 32}" y="${height - 10}" fill="${text}" font-size="10" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif">More</text>
+              <metadata>Source: GitHub ContributionsCollection for ${esc(login)}. Range: ${esc(firstDate)} to ${esc(lastDate)}.</metadata>
+            </svg>`;
+            }
+
+            fs.writeFileSync(
+              "dist/zainkhan-pro-contribution-grid.svg",
+              buildSvg("light"),
+              "utf8"
+            );
+
+            fs.writeFileSync(
+              "dist/zainkhan-pro-contribution-grid-dark.svg",
+              buildSvg("dark"),
+              "utf8"
+            );
+
+            core.info(`${login}: ${total} contributions in the last year`);
+
+      - name: Publish contribution calendar
         uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
           build_dir: dist
