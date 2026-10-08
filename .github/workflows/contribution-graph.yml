@@ -20,11 +20,10 @@ jobs:
       - name: Generate contribution graph
         uses: Platane/snk/svg-only@v3
         with:
-          github_user_name: zainkhan-pro
-          github_token: ${{ secrets.GH_CONTRIBUTIONS_TOKEN || github.token }}
+          github_user_name: ${{ github.repository_owner }}
           outputs: |
-            dist/github-contribution-snake.svg?palette=github-light
-            dist/github-contribution-snake-dark.svg?palette=github-dark
+            dist/zainkhan-pro-contribution-grid.svg?palette=github-light
+            dist/zainkhan-pro-contribution-grid-dark.svg?palette=github-dark
 
       - name: Publish graph
         uses: crazy-max/ghaction-github-pages@v3.1.0
