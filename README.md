@@ -173,7 +173,11 @@ Professional portfolio website focused on presentation, SEO, responsive design a
 <div align="center">
 
 <a href="https://github.com/malikzainkhan">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=malikzainkhan&hide_border=true&radius=12&area=true" alt="GitHub contribution activity graph" />
+  <img
+    src="https://github-readme-activity-graph.vercel.app/graph?username=malikzainkhan&theme=github-compact&hide_border=true&area=true"
+    alt="Malik Zain GitHub Contribution Activity"
+    width="100%"
+  />
 </a>
 
 </div>
@@ -184,13 +188,14 @@ Professional portfolio website focused on presentation, SEO, responsive design a
 
 <div align="center">
 
-<a href="https://github.com/malikzainkhan">
-  <img src="https://github-profile-trophy.vercel.app/?username=malikzainkhan&theme=flat&no-frame=true&no-bg=true&margin-w=8&row=1&column=7" alt="GitHub trophies" />
+<a href="https://github.com/malikzainkhan?tab=achievements">
+  <img
+    src="https://img.shields.io/badge/View%20My%20GitHub%20Achievements-181717?style=for-the-badge&logo=github"
+    alt="View GitHub Achievements"
+  />
 </a>
 
 </div>
-
----
 
 ## 📌 GitHub Activity
 
